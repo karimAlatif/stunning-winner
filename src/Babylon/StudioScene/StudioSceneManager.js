@@ -64,7 +64,7 @@ export default class StudioSceneManager {
     this.setUpEnvironMent();
     this.createShapes();
 
-    this.scene.debugLayer.show();
+    // this.scene.debugLayer.show();
     return this.scene;
   }
   createCamera() {
@@ -116,6 +116,9 @@ export default class StudioSceneManager {
     this.scene.createDefaultSkybox(skybox, true, 2000, .3);
 
     //
+    let ground = BABYLON.Mesh.CreateGround("ground1", 10, 10, 150, this.scene);
+    ground.position.y = -10;
+    ground.receiveShadows = true;
 
 
   }
@@ -231,6 +234,30 @@ export default class StudioSceneManager {
     }
 
   }
+  applyBouncing(node, amplitude, duration) {
+    node.position.y = amplitude;
+    //
+    var animationBox = new BABYLON.Animation("bounsAnim", "position.y", 60, BABYLON.Animation.ANIMATIONTYPE_FLOAT,
+      BABYLON.Animation.ANIMATIONLOOPMODE_CYCLE);
+
+    // Animation keys
+    var keys = [];
+    keys.push({
+      frame: 0,
+      value: amplitude
+    });
+    keys.push({
+      frame: 50,
+      value: 0
+    });
+    keys.push({
+      frame: 100,
+      value: amplitude
+    });
+    animationBox.setKeys(keys);
+    node.animations.push(animationBox);
+    this.scene.beginAnimation(node, 0, 100, true);
+  }
   //#endregion
 
   //#region UserInput (Mouse)
@@ -260,3 +287,7 @@ export default class StudioSceneManager {
   mouseWheelHandler(ev) { }
   //#endregion
 }
+
+
+
+
